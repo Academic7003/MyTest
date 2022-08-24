@@ -11,14 +11,36 @@ class MaterialSerilizer(serializers.ModelSerializer):
 
     class Meta:
         model = MaterialModel
-        fields = '__all__'
+        fields = ['name']
 
 class ResponseMaterialSerializer(serializers.Serializer):
     product_qty = serializers.IntegerField()
     product_id = serializers.IntegerField()
-    product_qty_ = serializers.IntegerField()
-    product_id_ = serializers.IntegerField()
+    product_qty2 = serializers.IntegerField()
+    product_id2 = serializers.IntegerField()
+
     
     class Meta:
-
         fields = '__all__'
+
+class WarehouseSerializer(serializers.ModelSerializer):
+    material = MaterialSerilizer()
+    class Meta:
+        model = WareHouseModel
+        fields = '__all__'
+
+    def create(self):
+     return WareHouseModel(**self.validated_data)
+
+class ResponseSerializer(serializers.Serializer):
+    product_name = serializers.CharField(max_length=255)
+    product_qty = serializers.IntegerField()
+    product_materials = WarehouseSerializer(many=True)
+
+    class Meta:
+        fields = '__all__'
+
+
+
+
+

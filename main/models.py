@@ -28,8 +28,7 @@ class ProductMaterialsModel(models.Model):
         return str(self.name)
 
 class WareHouseModel(models.Model):
-    part_id = models.BigIntegerField(unique=True, null=True, blank=True)
-    material = models.ForeignKey(MaterialModel, on_delete=models.CASCADE)
+    material = models.ForeignKey(MaterialModel, on_delete=models.CASCADE, )
     remainder = models.BigIntegerField()
     price = models.BigIntegerField()
     
