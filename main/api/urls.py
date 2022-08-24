@@ -6,7 +6,7 @@ from main.api.views import *
 
 urlpatterns = [
     path('create-product/', create_product, name='create-product'),
-    path('create-material/', create_material, name='create-material')
+    # path('create-material/', create_material, name='create-material')
 
 
 ]
