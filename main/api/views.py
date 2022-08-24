@@ -101,5 +101,6 @@ def create_product(request):
 
             base_data = WarehouseSerializer(serial_list, many=True)
             base_data2 = WarehouseSerializer(serial_list2, many=True)
+            
             context['result']=[base_data.data,base_data2.data]
             return Response(context)
