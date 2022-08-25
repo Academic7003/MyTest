@@ -27,7 +27,8 @@ class WarehouseSerializer(serializers.ModelSerializer):
     material = MaterialSerilizer()
     class Meta:
         model = WareHouseModel
-        fields = '__all__'
+        # fields = '__all__'
+        exclude=['id']
 
     def create(self):
      return WareHouseModel(**self.validated_data)

@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from main.api.serilaizers import *
 from rest_framework import status
 from rest_framework.decorators import api_view
+
+
 not_free = []
 serial_list = []
 serial_list2 = []
@@ -74,7 +76,7 @@ def create_product(request):
                         elif z > 0:
                             i.remainder=i.remainder-v
 
-                            create_warehouse_serializer(serial_list, WareHouseModel(id=i.id, material_id=i.material.id, remainder=v, price=i.price))
+                            create_warehouse_serializer(serial_list, WareHouseModel(part_id=i.part_id, material_id=i.material.id, remainder=v, price=i.price))
                             needs_dict[k] = 0
             for k,v in needs_dict.items():
                 if v==0:
@@ -100,7 +102,7 @@ def create_product(request):
 
                         elif z>0:
                             i.remainder=i.remainder-v
-                            create_warehouse_serializer(serial_list2, WareHouseModel(id=i.id, material_id=i.material.id, remainder=v, price=i.price))
+                            create_warehouse_serializer(serial_list2, WareHouseModel(part_id=i.part_id, material_id=i.material.id, remainder=v, price=i.price))
                             needs_dict2[k] = 0
             for k,v in needs_dict2.items():
                 if v==0:
