@@ -6,9 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 
-not_free = []
-serial_list = []
-serial_list2 = []
+
 
 def create_warehouse_serializer(list, obj):
     
@@ -17,6 +15,11 @@ def create_warehouse_serializer(list, obj):
 @api_view(['POST', 'GET'])
 def create_product(request):
     context = {}
+    not_free = []
+    serial_list = []
+    serial_list2 = []
+    needs_list = {}
+    needs_list2 = {}
 
     if request.method == "GET":
         prod = ProductModel.objects.all()
