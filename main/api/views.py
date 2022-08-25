@@ -5,11 +5,21 @@ from main.api.serilaizers import *
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+def needs_dict_returner(products, product_need):
+    needs_list = [product_need*float(i.quantity) for i in products]
+    needs_id = [i.material_id for i in products]
+    needs_dict = dict(zip(needs_id, needs_list))
+    return needs_dict
 
+def fix_needs(list, needs_dict):
+        for k,v in needs_dict.items():
+            if v==0:
+                continue
+            else:
+                create_warehouse_serializer(list, WareHouseModel(material_id=k, remainder=v))
 
 
 def create_warehouse_serializer(list, obj):
-    
     list.append(obj)
 
 @api_view(['POST', 'GET'])
@@ -18,8 +28,6 @@ def create_product(request):
     not_free = []
     serial_list = []
     serial_list2 = []
-    needs_list = {}
-    needs_list2 = {}
 
     if request.method == "GET":
         prod = ProductModel.objects.all()
@@ -48,17 +56,8 @@ def create_product(request):
 
             # ombordan bizga k.k mahsulotlarni partiyasidan qatiynazar chaqiryapman
             warhou = WareHouseModel.objects.all()
-
-            needs_list = [count*float(i.quantity) for i in prod]
-            needs_id = [i.material_id for i in prod]
-            needs_dict = dict(zip(needs_id, needs_list))
-            
-            needs_list2 = [count2*float(i.quantity) for i in prod2]
-            needs_id2 = [i.material_id for i in prod2]
-            needs_dict2=dict(zip(needs_id2, needs_list2))
-
-            
-
+            needs_dict = needs_dict_returner(prod,count)
+            needs_dict2=needs_dict_returner(prod2, count2)
 
             for i in warhou:
 
@@ -81,11 +80,9 @@ def create_product(request):
 
                             create_warehouse_serializer(serial_list, WareHouseModel(part_id=i.part_id, material_id=i.material.id, remainder=v, price=i.price))
                             needs_dict[k] = 0
-            for k,v in needs_dict.items():
-                if v==0:
-                    continue
-                else:
-                    create_warehouse_serializer(serial_list, WareHouseModel(material_id=k, remainder=v))
+                            
+            fix_needs(serial_list, needs_dict)
+
 
             for i in warhou:
                 if i.id in not_free:
@@ -107,11 +104,8 @@ def create_product(request):
                             i.remainder=i.remainder-v
                             create_warehouse_serializer(serial_list2, WareHouseModel(part_id=i.part_id, material_id=i.material.id, remainder=v, price=i.price))
                             needs_dict2[k] = 0
-            for k,v in needs_dict2.items():
-                if v==0:
-                    continue
-                else:
-                    create_warehouse_serializer(serial_list2, WareHouseModel(material_id=k, remainder=v))
+
+            fix_needs(serial_list2, needs_dict2)
 
             base_data = WarehouseSerializer(serial_list, many=True)
             base_data2 = WarehouseSerializer(serial_list2, many=True)
