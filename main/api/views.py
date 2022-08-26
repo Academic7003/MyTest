@@ -6,29 +6,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from main.api.services import *
 
-def add_needs_return_list(serial_list, warhou, not_free, needs_dict):
-            for i in warhou:
-                if i.id in not_free:
-                    continue
-                for k,v in needs_dict.items():
-                    if v==0:
-                        continue
-                    if i.material_id == k:
-                        z = i.remainder - v
-                        if z < 0:
-                            needs_dict[k] = v- i.remainder
-                            create_warehouse_serializer(serial_list, i)
-
-                        elif z == 0:
-                            needs_dict[k] = 0
-                            create_warehouse_serializer(serial_list, i)
-                            not_free.append(i.id)
-
-                        elif z > 0:
-                            i.remainder=i.remainder-v
-                            create_warehouse_serializer(serial_list, WareHouseModel(part_id=i.part_id, material_id=i.material.id, remainder=v, price=i.price))
-                            needs_dict[k] = 0
-            return serial_list
 
 @api_view(['POST', 'GET'])
 def create_product(request):
